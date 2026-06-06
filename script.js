@@ -30,10 +30,19 @@ function changeLanguage(lang) {
     localStorage.setItem('language', lang);
     updateAllContent();
     updateLanguageButtons();
+    closeLanguageDropdown();
 }
 
 function updateLanguageButtons() {
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+    // Update toggle button
+    const toggleBtn = document.getElementById('langToggleBtn');
+    if (toggleBtn) {
+        toggleBtn.textContent = currentLanguage === 'my' ? '🇲🇲 Myanmar' : '🇬🇧 EN';
+        toggleBtn.setAttribute('data-lang', currentLanguage);
+    }
+
+    // Update dropdown options
+    document.querySelectorAll('.lang-option').forEach(btn => {
         btn.classList.remove('active');
         if (btn.getAttribute('data-lang') === currentLanguage) {
             btn.classList.add('active');
@@ -46,6 +55,20 @@ function updateTextContent() {
         const key = element.getAttribute('data-text');
         element.textContent = getTranslation(key);
     });
+}
+
+// ========================================
+// LANGUAGE DROPDOWN MANAGEMENT
+// ========================================
+
+function toggleLanguageDropdown() {
+    const selector = document.getElementById('languageSelector');
+    selector.classList.toggle('open');
+}
+
+function closeLanguageDropdown() {
+    const selector = document.getElementById('languageSelector');
+    selector.classList.remove('open');
 }
 
 // ========================================
@@ -78,12 +101,12 @@ function initializeWebsite() {
 
     // Initialize interactions
     initializeHeaderMenu();
+    initializeLanguageDropdown();
     initializeHeroSlider();
     initializeThemeToggle();
     initializeScrollAnimations();
     initializeScrollSpy();
     initializeBackToTop();
-    initializeLanguageSwitcher();
     initializeGalleryModal();
 
     // Set current year
@@ -344,14 +367,34 @@ function loadFooter() {
 // INTERACTIVE FEATURES
 // ========================================
 
-// Language Switcher
-function initializeLanguageSwitcher() {
-    const langButtons = document.querySelectorAll('.lang-btn');
-    langButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const lang = btn.getAttribute('data-lang');
+// Language Dropdown
+function initializeLanguageDropdown() {
+    const toggleBtn = document.getElementById('langToggleBtn');
+    const langOptions = document.querySelectorAll('.lang-option');
+    const selector = document.getElementById('languageSelector');
+
+    // Toggle dropdown on button click
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleLanguageDropdown();
+        });
+    }
+
+    // Handle language option selection
+    langOptions.forEach(option => {
+        option.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const lang = option.getAttribute('data-lang');
             changeLanguage(lang);
         });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!selector.contains(e.target)) {
+            closeLanguageDropdown();
+        }
     });
 }
 
@@ -396,7 +439,7 @@ function initializeGalleryModal() {
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
-        if (modal.style.display !== 'none') {
+        if (modal.classList.contains('show')) {
             if (e.key === 'ArrowLeft') changeGalleryImage(-1);
             if (e.key === 'ArrowRight') changeGalleryImage(1);
             if (e.key === 'Escape') closeGalleryModal();
@@ -411,13 +454,13 @@ function openGalleryModal(index) {
     
     currentGalleryIndex = index;
     img.src = config.galleryImages[index];
-    modal.style.display = 'flex';
+    modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 }
 
 function closeGalleryModal() {
     const modal = document.getElementById('galleryModal');
-    modal.style.display = 'none';
+    modal.classList.remove('show');
     document.body.style.overflow = 'auto';
 }
 
