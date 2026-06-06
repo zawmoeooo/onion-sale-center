@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Onion Sale Center - Fresh Quality Onions at Competitive Prices. Wholesale and retail onion supplier.">
+    <meta name="keywords" content="onion, wholesale, retail, fresh produce, agriculture, delivery service">
+    <meta name="author" content="Onion Sale Center">
+    
+    <!-- Open Graph Tags for Social Sharing -->
+    <meta property="og:title" content="Onion Sale Center">
+    <meta property="og:description" content="Fresh Quality Onions at Competitive Prices">
+    <meta property="og:image" content="images/og-image.jpg">
+    <meta property="og:url" content="https://your-domain.com">
+    <meta property="og:type" content="business.business">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Onion Sale Center">
+    <meta name="twitter:description" content="Fresh Quality Onions at Competitive Prices">
+    <meta name="twitter:image" content="images/og-image.jpg">
+    
+    <title>Onion Sale Center - Fresh Quality Onions</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="images/logo.png" alt="Logo" class="logo" id="logo">
+                    <span class="business-name" id="businessName"></span>
+                </div>
+                
+                <nav class="nav-menu" id="navMenu">
+                    <ul class="nav-list">
+                        <li><a href="#home" class="nav-link" data-scroll="home">Home</a></li>
+                        <li><a href="#about" class="nav-link" data-scroll="about">About</a></li>
+                        <li><a href="#goals" class="nav-link" data-scroll="goals">Goals</a></li>
+                        <li><a href="#services" class="nav-link" data-scroll="services">Services</a></li>
+                        <li><a href="#gallery" class="nav-link" data-scroll="gallery">Gallery</a></li>
+                        <li><a href="#why-us" class="nav-link" data-scroll="why-us">Why Us</a></li>
+                        <li><a href="#contact" class="nav-link" data-scroll="contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <!-- Theme Toggle -->
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-slider" id="heroSlider">
+            <!-- Slides will be generated dynamically -->
+        </div>
+        
+        <button class="slider-btn slider-btn-prev" id="sliderPrev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="slider-btn slider-btn-next" id="sliderNext">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="hero-content">
+            <h1 class="hero-title" id="heroTitle"></h1>
+            <p class="hero-tagline" id="heroTagline"></p>
+            <a href="#contact" class="btn btn-primary" id="heroCtaBtn">
+                <i class="fas fa-envelope"></i> Contact Us
+            </a>
+        </div>
+        
+        <div class="slider-dots" id="sliderDots"></div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">About Us</h2>
+                <div class="title-underline"></div>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3 id="aboutTitle"></h3>
+                    <p id="aboutDescription"></p>
+                    <p id="aboutHistory"></p>
+                    <p id="missionStatement"></p>
+                </div>
+                
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="500">500+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="10">10+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="1000">1000+</div>
+                        <div class="stat-label">Tons Supplied</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="24">24/7</div>
+                        <div class="stat-label">Customer Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Goals Section -->
+    <section class="goals" id="goals">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Business Goals</h2>
+                <div class="title-underline"></div>
+            </div>
+            
+            <div class="goals-grid" id="goalsGrid">
+                <!-- Goals cards will be generated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+                <div class="title-underline"></div>
+            </div>
+            
+            <div class="services-grid" id="servicesGrid">
+                <!-- Service cards will be generated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Gallery</h2>
+                <div class="title-underline"></div>
+            </div>
+            
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Gallery images will be generated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-us" id="why-us">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Why Choose Us</h2>
+                <div class="title-underline"></div>
+            </div>
+            
+            <div class="benefits-grid" id="benefitsGrid">
+                <!-- Benefits will be generated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="title-underline"></div>
+            </div>
+            
+            <div class="contact-grid" id="contactGrid">
+                <!-- Contact cards will be generated dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Address & Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="container">
+            <div class="map-content">
+                <div class="map-info">
+                    <h3>Find Us Here</h3>
+                    <p id="addressText"></p>
+                </div>
+                
+                <div class="map-container" id="mapContainer">
+                    <!-- Google Map will be embedded dynamically -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; <span id="footerYear"></span> <span id="footerBusinessName"></span>. All rights reserved.</p>
+                </div>
+                
+                <div class="social-links" id="footerSocialLinks">
+                    <!-- Social links will be generated dynamically -->
+                </div>
+                
+                <a href="#header" class="back-to-top" id="backToTop">
+                    <i class="fas fa-arrow-up"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Config and Scripts -->
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
