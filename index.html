@@ -51,15 +51,21 @@
                 
                 <nav class="nav-menu" id="navMenu">
                     <ul class="nav-list">
-                        <li><a href="#home" class="nav-link" data-scroll="home">Home</a></li>
-                        <li><a href="#about" class="nav-link" data-scroll="about">About</a></li>
-                        <li><a href="#goals" class="nav-link" data-scroll="goals">Goals</a></li>
-                        <li><a href="#services" class="nav-link" data-scroll="services">Services</a></li>
-                        <li><a href="#gallery" class="nav-link" data-scroll="gallery">Gallery</a></li>
-                        <li><a href="#why-us" class="nav-link" data-scroll="why-us">Why Us</a></li>
-                        <li><a href="#contact" class="nav-link" data-scroll="contact">Contact</a></li>
+                        <li><a href="#home" class="nav-link" data-scroll="home" data-text="nav.home"></a></li>
+                        <li><a href="#about" class="nav-link" data-scroll="about" data-text="nav.about"></a></li>
+                        <li><a href="#goals" class="nav-link" data-scroll="goals" data-text="nav.goals"></a></li>
+                        <li><a href="#services" class="nav-link" data-scroll="services" data-text="nav.services"></a></li>
+                        <li><a href="#gallery" class="nav-link" data-scroll="gallery" data-text="nav.gallery"></a></li>
+                        <li><a href="#why-us" class="nav-link" data-scroll="why-us" data-text="nav.why_us"></a></li>
+                        <li><a href="#contact" class="nav-link" data-scroll="contact" data-text="nav.contact"></a></li>
                     </ul>
                 </nav>
+                
+                <!-- Language Selector -->
+                <div class="language-selector">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="my"> Myanmar</button>
+                </div>
                 
                 <!-- Mobile Menu Button -->
                 <button class="mobile-menu-btn" id="mobileMenuBtn">
@@ -93,7 +99,7 @@
             <h1 class="hero-title" id="heroTitle"></h1>
             <p class="hero-tagline" id="heroTagline"></p>
             <a href="#contact" class="btn btn-primary" id="heroCtaBtn">
-                <i class="fas fa-envelope"></i> Contact Us
+                <i class="fas fa-envelope"></i> <span data-text="nav.contact"></span>
             </a>
         </div>
         
@@ -104,7 +110,7 @@
     <section class="about" id="about">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">About Us</h2>
+                <h2 class="section-title" data-text="about.title"></h2>
                 <div class="title-underline"></div>
             </div>
             
@@ -119,19 +125,19 @@
                 <div class="about-stats">
                     <div class="stat-card">
                         <div class="stat-number" data-target="500">500+</div>
-                        <div class="stat-label">Happy Customers</div>
+                        <div class="stat-label" data-text="stats.customers"></div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" data-target="10">10+</div>
-                        <div class="stat-label">Years Experience</div>
+                        <div class="stat-label" data-text="stats.experience"></div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" data-target="1000">1000+</div>
-                        <div class="stat-label">Tons Supplied</div>
+                        <div class="stat-label" data-text="stats.supplied"></div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-number" data-target="24">24/7</div>
-                        <div class="stat-label">Customer Support</div>
+                        <div class="stat-label" data-text="stats.support"></div>
                     </div>
                 </div>
             </div>
@@ -142,7 +148,7 @@
     <section class="goals" id="goals">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Business Goals</h2>
+                <h2 class="section-title" data-text="goals_title"></h2>
                 <div class="title-underline"></div>
             </div>
             
@@ -156,7 +162,7 @@
     <section class="services" id="services">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Services</h2>
+                <h2 class="section-title" data-text="services_title"></h2>
                 <div class="title-underline"></div>
             </div>
             
@@ -170,7 +176,7 @@
     <section class="gallery" id="gallery">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Gallery</h2>
+                <h2 class="section-title" data-text="gallery_title"></h2>
                 <div class="title-underline"></div>
             </div>
             
@@ -180,11 +186,19 @@
         </div>
     </section>
 
+    <!-- Gallery Modal -->
+    <div class="gallery-modal" id="galleryModal">
+        <span class="gallery-modal-close">&times;</span>
+        <img class="gallery-modal-content" id="galleryModalImg">
+        <button class="gallery-modal-prev" id="galleryModalPrev"><i class="fas fa-chevron-left"></i></button>
+        <button class="gallery-modal-next" id="galleryModalNext"><i class="fas fa-chevron-right"></i></button>
+    </div>
+
     <!-- Why Choose Us Section -->
     <section class="why-us" id="why-us">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Why Choose Us</h2>
+                <h2 class="section-title" data-text="why_us_title"></h2>
                 <div class="title-underline"></div>
             </div>
             
@@ -198,7 +212,7 @@
     <section class="contact" id="contact">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Get In Touch</h2>
+                <h2 class="section-title" data-text="contact_title"></h2>
                 <div class="title-underline"></div>
             </div>
             
@@ -213,7 +227,7 @@
         <div class="container">
             <div class="map-content">
                 <div class="map-info">
-                    <h3>Find Us Here</h3>
+                    <h3 data-text="map_title"></h3>
                     <p id="addressText"></p>
                 </div>
                 
@@ -229,7 +243,7 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-text">
-                    <p>&copy; <span id="footerYear"></span> <span id="footerBusinessName"></span>. All rights reserved.</p>
+                    <p>&copy; <span id="footerYear"></span> <span id="footerBusinessName"></span>. <span data-text="footer_rights"></span></p>
                 </div>
                 
                 <div class="social-links" id="footerSocialLinks">
