@@ -1,714 +1,436 @@
 /**
- * ONION SALE CENTER - MAIN JAVASCRIPT
- * ==================================
- * Handles all dynamic content loading and interactivity
- * Supports English and Myanmar languages with gallery modal
+ * Onion Sale Center - Dynamic Application Engine (with Modal & Manual Slider Navigation)
  */
 
-// ========================================
-// LANGUAGE MANAGEMENT
-// ========================================
-
-let currentLanguage = localStorage.getItem('language') || 'en';
-
-function getTranslation(path) {
-    const keys = path.split('.');
-    let value = BUSINESS_CONFIG.languages[currentLanguage];
+document.addEventListener("DOMContentLoaded", () => {
+    let config = BUSINESS_CONFIG;
+    let lang = localStorage.getItem("onion_lang") || config.currentLanguage || "en";
+    config.currentLanguage = lang;
     
-    for (let key of keys) {
-        if (value && typeof value === 'object' && key in value) {
-            value = value[key];
-        } else {
-            return path; // Return path if translation not found
-        }
-    }
-    return value;
-}
+    const langSelect = document.getElementById("lang-select");
+    if(langSelect) langSelect.value = lang;
 
-function changeLanguage(lang) {
-    currentLanguage = lang;
-    localStorage.setItem('language', lang);
-    updateAllContent();
-    updateLanguageButtons();
-    closeLanguageDropdown();
-}
+    initTheme();
+    renderApp();
 
-function updateLanguageButtons() {
-    // Update toggle button
-    const toggleBtn = document.getElementById('langToggleBtn');
-    if (toggleBtn) {
-        toggleBtn.textContent = currentLanguage === 'my' ? '🇲🇲 Myanmar' : '🇬🇧 EN';
-        toggleBtn.setAttribute('data-lang', currentLanguage);
-    }
+    function renderApp() {
+        const lang = config.currentLanguage;
 
-    // Update dropdown options
-    document.querySelectorAll('.lang-option').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.getAttribute('data-lang') === currentLanguage) {
-            btn.classList.add('active');
-        }
-    });
-}
-
-function updateTextContent() {
-    document.querySelectorAll('[data-text]').forEach(element => {
-        const key = element.getAttribute('data-text');
-        element.textContent = getTranslation(key);
-    });
-}
-
-// ========================================
-// LANGUAGE DROPDOWN MANAGEMENT
-// ========================================
-
-function toggleLanguageDropdown() {
-    const selector = document.getElementById('languageSelector');
-    selector.classList.toggle('open');
-}
-
-function closeLanguageDropdown() {
-    const selector = document.getElementById('languageSelector');
-    selector.classList.remove('open');
-}
-
-// ========================================
-// INITIALIZATION
-// ========================================
-
-document.addEventListener('DOMContentLoaded', () => {
-    initializeWebsite();
-});
-
-function initializeWebsite() {
-    // Hide loading spinner
-    setTimeout(() => {
-        document.getElementById('loadingSpinner').classList.add('hidden');
-    }, 500);
-
-    // Initialize language
-    updateLanguageButtons();
-
-    // Load all content from config
-    loadBusinessInfo();
-    loadAboutSection();
-    loadGoalsSection();
-    loadServicesSection();
-    loadGallerySection();
-    loadBenefitsSection();
-    loadContactSection();
-    loadMapSection();
-    loadFooter();
-
-    // Initialize interactions
-    initializeHeaderMenu();
-    initializeLanguageDropdown();
-    initializeHeroSlider();
-    initializeThemeToggle();
-    initializeScrollAnimations();
-    initializeScrollSpy();
-    initializeBackToTop();
-    initializeGalleryModal();
-
-    // Set current year
-    document.getElementById('footerYear').textContent = new Date().getFullYear();
-
-    // Update text content for current language
-    updateTextContent();
-}
-
-function updateAllContent() {
-    loadBusinessInfo();
-    loadAboutSection();
-    loadGoalsSection();
-    loadServicesSection();
-    loadGallerySection();
-    loadBenefitsSection();
-    loadContactSection();
-    loadMapSection();
-    loadFooter();
-    updateTextContent();
-}
-
-// ========================================
-// CONTENT LOADING FUNCTIONS
-// ========================================
-
-function loadBusinessInfo() {
-    const config = BUSINESS_CONFIG;
-    const lang = getTranslation('businessName');
-    const tagline = getTranslation('tagline');
-    
-    document.getElementById('logo').src = config.logo;
-    document.getElementById('businessName').textContent = lang;
-    document.getElementById('heroTitle').textContent = lang;
-    document.getElementById('heroTagline').textContent = tagline;
-}
-
-function loadAboutSection() {
-    const about = getTranslation('about');
-
-    document.getElementById('aboutTitle').textContent = about.title;
-    document.getElementById('aboutDescription').textContent = about.description;
-    document.getElementById('aboutHistory').textContent = about.history;
-    document.getElementById('missionStatement').textContent = '🎯 ' + about.mission;
-}
-
-function loadGoalsSection() {
-    const goals = getTranslation('goals');
-    const goalsGrid = document.getElementById('goalsGrid');
-    
-    goalsGrid.innerHTML = '';
-    goals.forEach((goal) => {
-        const goalCard = document.createElement('div');
-        goalCard.className = 'goal-card reveal';
-        goalCard.innerHTML = `
-            <div class="goal-icon">
-                <i class="fas ${goal.icon}"></i>
-            </div>
-            <h3 class="goal-title">${goal.title}</h3>
-            <p>${goal.description || ''}</p>
-        `;
-        goalsGrid.appendChild(goalCard);
-    });
-}
-
-function loadServicesSection() {
-    const services = getTranslation('services');
-    const servicesGrid = document.getElementById('servicesGrid');
-    
-    servicesGrid.innerHTML = '';
-    services.forEach((service) => {
-        const serviceCard = document.createElement('div');
-        serviceCard.className = 'service-card reveal';
-        serviceCard.innerHTML = `
-            <i class="fas ${service.icon} service-icon"></i>
-            <h3 class="service-title">${service.title}</h3>
-            <p class="service-description">${service.description}</p>
-        `;
-        servicesGrid.appendChild(serviceCard);
-    });
-}
-
-function loadGallerySection() {
-    const config = BUSINESS_CONFIG;
-    const galleryGrid = document.getElementById('galleryGrid');
-    
-    galleryGrid.innerHTML = '';
-    config.galleryImages.forEach((image, index) => {
-        const galleryItem = document.createElement('div');
-        galleryItem.className = 'gallery-item reveal';
-        galleryItem.innerHTML = `
-            <img src="${image}" alt="Gallery Image ${index + 1}" loading="lazy">
-            <div class="gallery-overlay">
-                <i class="fas fa-search-plus"></i>
-            </div>
-        `;
+        // SEO and Document Targets Metadata Initialization
+        document.title = config.seo[lang].title;
+        document.querySelector('meta[name="description"]').setAttribute("content", config.seo[lang].description);
+        document.querySelector('meta[name="keywords"]').setAttribute("content", config.seo[lang].keywords);
+        document.getElementById("favicon-link").href = config.favicon;
         
-        // Add click to open image in modal
-        galleryItem.addEventListener('click', () => {
-            openGalleryModal(index);
+        document.querySelector('meta[property="og:title"]').setAttribute("content", config.seo[lang].title);
+        document.querySelector('meta[property="og:description"]').setAttribute("content", config.seo[lang].description);
+        document.querySelector('meta[property="og:image"]').setAttribute("content", config.sliderImages ? config.sliderImages[0] : config.logo);
+
+        document.getElementById("header-logo").src = config.logo;
+        document.getElementById("header-title").textContent = config.businessName[lang];
+
+        // Nav Links Setup 
+        const navContainer = document.getElementById("nav-links-container");
+        navContainer.innerHTML = "";
+        Object.keys(config.nav).forEach(key => {
+            const li = document.createElement("li");
+            li.innerHTML = `<a href="#${key}">${config.nav[key][lang]}</a>`;
+            navContainer.appendChild(li);
         });
+
+        // Hero Content Text Injection
+        document.getElementById("hero-headline").textContent = config.businessName[lang];
+        document.getElementById("hero-tagline").textContent = config.tagline[lang];
+        document.getElementById("hero-cta").textContent = config.hero.ctaText[lang];
         
-        galleryGrid.appendChild(galleryItem);
-    });
-}
+        // Initializing Enhanced Slider
+        initHeroSlider(config.hero.sliderImages);
 
-function loadBenefitsSection() {
-    const benefits = getTranslation('benefits');
-    const benefitsGrid = document.getElementById('benefitsGrid');
-    
-    benefitsGrid.innerHTML = '';
-    benefits.forEach((benefit) => {
-        const benefitCard = document.createElement('div');
-        benefitCard.className = 'benefit-card reveal';
-        benefitCard.innerHTML = `
-            <div class="benefit-icon">
-                <i class="fas ${benefit.icon}"></i>
-            </div>
-            <h3 class="benefit-title">${benefit.title}</h3>
-            <p class="benefit-description">${benefit.description}</p>
-        `;
-        benefitsGrid.appendChild(benefitCard);
-    });
-}
+        // About & Stats Section
+        document.getElementById("about-title").textContent = config.about.title[lang];
+        document.getElementById("about-desc").textContent = config.about.description[lang];
+        document.getElementById("history-title").textContent = config.about.historyTitle[lang];
+        document.getElementById("about-history").textContent = config.about.history[lang];
+        document.getElementById("mission-title").textContent = config.about.missionTitle[lang];
+        document.getElementById("about-mission").textContent = config.about.mission[lang];
+        buildStatsCounters(config.stats, lang);
 
-function loadContactSection() {
-    const config = BUSINESS_CONFIG;
-    const contactGrid = document.getElementById('contactGrid');
-    const contact = config.contact;
-    const labels = getTranslation('contact_labels');
-    
-    contactGrid.innerHTML = '';
+        // Business Goals Cards Block
+        document.getElementById("goals-main-title").textContent = config.goals.title[lang];
+        buildCards(config.goals.items, "goals-container", lang, true);
 
-    // Phone
-    const phoneCard = document.createElement('div');
-    phoneCard.className = 'contact-card reveal';
-    phoneCard.innerHTML = `
-        <i class="fas fa-phone contact-icon"></i>
-        <p class="contact-label">${labels.phone}</p>
-        <p class="contact-value"><a href="tel:${contact.phone}">${contact.phone}</a></p>
-    `;
-    contactGrid.appendChild(phoneCard);
+        // Services & Products Section
+        document.getElementById("services-main-title").textContent = config.services.title[lang];
+        buildCards(config.services.items, "services-container", lang, false);
 
-    // Email
-    const emailCard = document.createElement('div');
-    emailCard.className = 'contact-card reveal';
-    emailCard.innerHTML = `
-        <i class="fas fa-envelope contact-icon"></i>
-        <p class="contact-label">${labels.email}</p>
-        <p class="contact-value"><a href="mailto:${contact.email}">${contact.email}</a></p>
-    `;
-    contactGrid.appendChild(emailCard);
+        // Media Gallery Section Loading Elements
+        document.getElementById("gallery-main-title").textContent = config.gallery.title[lang];
+        buildGallery(config.gallery.images);
 
-    // Facebook
-    const facebookCard = document.createElement('div');
-    facebookCard.className = 'contact-card reveal';
-    facebookCard.innerHTML = `
-        <i class="fab fa-facebook contact-icon"></i>
-        <p class="contact-label">${labels.facebook}</p>
-        <p class="contact-value"><a href="${contact.facebook}" target="_blank" rel="noopener noreferrer">Visit Page</a></p>
-    `;
-    contactGrid.appendChild(facebookCard);
+        // Why Choose Us Logic Components
+        document.getElementById("why-main-title").textContent = config.whyUs.title[lang];
+        buildWhyChooseUs(config.whyUs.items, lang);
 
-    // TikTok
-    const tiktokCard = document.createElement('div');
-    tiktokCard.className = 'contact-card reveal';
-    tiktokCard.innerHTML = `
-        <i class="fab fa-tiktok contact-icon"></i>
-        <p class="contact-label">${labels.tiktok}</p>
-        <p class="contact-value"><a href="${contact.tiktok}" target="_blank" rel="noopener noreferrer">Visit</a></p>
-    `;
-    contactGrid.appendChild(tiktokCard);
+        // Location / Address Maps Components
+        document.getElementById("contact-main-title").textContent = config.contact.title[lang];
+        document.getElementById("map-location-title").textContent = config.address.title[lang];
+        document.getElementById("address-text").textContent = config.address.text[lang];
+        document.getElementById("google-map-iframe").src = config.address.googleMapEmbed;
+        buildContactCards(config.contact, lang);
 
-    // WeChat
-    const wechatCard = document.createElement('div');
-    wechatCard.className = 'contact-card reveal';
-    wechatCard.innerHTML = `
-        <i class="fab fa-weixin contact-icon"></i>
-        <p class="contact-label">${labels.wechat}</p>
-        <p class="contact-value">${contact.wechat}</p>
-    `;
-    contactGrid.appendChild(wechatCard);
+        document.getElementById("footer-year").textContent = new Date().getFullYear();
+        document.getElementById("footer-biz-name").textContent = config.businessName[lang];
 
-    // Viber
-    const viberCard = document.createElement('div');
-    viberCard.className = 'contact-card reveal';
-    viberCard.innerHTML = `
-        <i class="fas fa-phone contact-icon"></i>
-        <p class="contact-label">${labels.viber}</p>
-        <p class="contact-value"><a href="viber://contact?number=${contact.viber.replace(/\D/g, '')}">${contact.viber}</a></p>
-    `;
-    contactGrid.appendChild(viberCard);
-
-    // WhatsApp
-    const whatsappCard = document.createElement('div');
-    whatsappCard.className = 'contact-card reveal';
-    whatsappCard.innerHTML = `
-        <i class="fab fa-whatsapp contact-icon"></i>
-        <p class="contact-label">${labels.whatsapp}</p>
-        <p class="contact-value"><a href="https://wa.me/${contact.whatsapp.replace(/\D/g, '')}" target="_blank" rel="noopener noreferrer">${contact.whatsapp}</a></p>
-    `;
-    contactGrid.appendChild(whatsappCard);
-
-    // Telegram
-    const telegramCard = document.createElement('div');
-    telegramCard.className = 'contact-card reveal';
-    telegramCard.innerHTML = `
-        <i class="fab fa-telegram contact-icon"></i>
-        <p class="contact-label">${labels.telegram}</p>
-        <p class="contact-value"><a href="${contact.telegram}" target="_blank" rel="noopener noreferrer">Visit</a></p>
-    `;
-    contactGrid.appendChild(telegramCard);
-}
-
-function loadMapSection() {
-    const config = BUSINESS_CONFIG;
-    const addressKey = currentLanguage === 'my' ? 'text_my' : 'text_en';
-    const address = config.address;
-
-    document.getElementById('addressText').textContent = address[addressKey];
-    
-    const mapContainer = document.getElementById('mapContainer');
-    mapContainer.innerHTML = `<iframe src="${address.googleMapEmbed}" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
-}
-
-function loadFooter() {
-    const config = BUSINESS_CONFIG;
-    const businessName = getTranslation('businessName');
-    document.getElementById('footerBusinessName').textContent = businessName;
-
-    // Load social links
-    const footerSocialLinks = document.getElementById('footerSocialLinks');
-    const contact = config.contact;
-    
-    footerSocialLinks.innerHTML = '';
-
-    // Social media links
-    const socialLinks = [
-        { icon: 'fab fa-facebook', url: contact.facebook, title: 'Facebook' },
-        { icon: 'fab fa-tiktok', url: contact.tiktok, title: 'TikTok' },
-        { icon: 'fab fa-whatsapp', url: `https://wa.me/${contact.whatsapp.replace(/\D/g, '')}`, title: 'WhatsApp' },
-        { icon: 'fab fa-telegram', url: contact.telegram, title: 'Telegram' }
-    ];
-
-    socialLinks.forEach(link => {
-        const socialLink = document.createElement('a');
-        socialLink.href = link.url;
-        socialLink.className = 'social-link';
-        socialLink.title = link.title;
-        socialLink.target = '_blank';
-        socialLink.rel = 'noopener noreferrer';
-        socialLink.innerHTML = `<i class="${link.icon}"></i>`;
-        footerSocialLinks.appendChild(socialLink);
-    });
-}
-
-// ========================================
-// INTERACTIVE FEATURES
-// ========================================
-
-// Language Dropdown
-function initializeLanguageDropdown() {
-    const toggleBtn = document.getElementById('langToggleBtn');
-    const langOptions = document.querySelectorAll('.lang-option');
-    const selector = document.getElementById('languageSelector');
-
-    // Toggle dropdown on button click
-    if (toggleBtn) {
-        toggleBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleLanguageDropdown();
-        });
-    }
-
-    // Handle language option selection
-    langOptions.forEach(option => {
-        option.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const lang = option.getAttribute('data-lang');
-            changeLanguage(lang);
-        });
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!selector.contains(e.target)) {
-            closeLanguageDropdown();
-        }
-    });
-}
-
-// Header Menu
-function initializeHeaderMenu() {
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navMenu = document.getElementById('navMenu');
-    const navLinks = document.querySelectorAll('.nav-link');
-
-    mobileMenuBtn.addEventListener('click', () => {
-        mobileMenuBtn.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    navLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenuBtn.classList.remove('active');
-            navMenu.classList.remove('active');
-        });
-    });
-}
-
-// Gallery Modal
-let currentGalleryIndex = 0;
-
-function initializeGalleryModal() {
-    const modal = document.getElementById('galleryModal');
-    const closeBtn = document.querySelector('.gallery-modal-close');
-    const prevBtn = document.getElementById('galleryModalPrev');
-    const nextBtn = document.getElementById('galleryModalNext');
-
-    closeBtn.addEventListener('click', closeGalleryModal);
-    prevBtn.addEventListener('click', () => changeGalleryImage(-1));
-    nextBtn.addEventListener('click', () => changeGalleryImage(1));
-
-    // Close modal when clicking outside the image
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeGalleryModal();
-        }
-    });
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (modal.classList.contains('show')) {
-            if (e.key === 'ArrowLeft') changeGalleryImage(-1);
-            if (e.key === 'ArrowRight') changeGalleryImage(1);
-            if (e.key === 'Escape') closeGalleryModal();
-        }
-    });
-}
-
-function openGalleryModal(index) {
-    const config = BUSINESS_CONFIG;
-    const modal = document.getElementById('galleryModal');
-    const img = document.getElementById('galleryModalImg');
-    
-    currentGalleryIndex = index;
-    img.src = config.galleryImages[index];
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeGalleryModal() {
-    const modal = document.getElementById('galleryModal');
-    modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
-}
-
-function changeGalleryImage(direction) {
-    const config = BUSINESS_CONFIG;
-    currentGalleryIndex += direction;
-    
-    if (currentGalleryIndex >= config.galleryImages.length) {
-        currentGalleryIndex = 0;
-    } else if (currentGalleryIndex < 0) {
-        currentGalleryIndex = config.galleryImages.length - 1;
-    }
-    
-    document.getElementById('galleryModalImg').src = config.galleryImages[currentGalleryIndex];
-}
-
-// Hero Slider
-function initializeHeroSlider() {
-    const config = BUSINESS_CONFIG;
-    const heroSlider = document.getElementById('heroSlider');
-    const sliderDots = document.getElementById('sliderDots');
-    const sliderPrev = document.getElementById('sliderPrev');
-    const sliderNext = document.getElementById('sliderNext');
-
-    let currentSlide = 0;
-    const slides = config.sliderImages;
-
-    // Create slide elements
-    slides.forEach((image, index) => {
-        const slide = document.createElement('div');
-        slide.className = `hero-slide ${index === 0 ? 'active' : ''}`;
-        slide.innerHTML = `<img src="${image}" alt="Slide ${index + 1}" loading="lazy">`;
-        heroSlider.appendChild(slide);
-
-        // Create dot
-        const dot = document.createElement('div');
-        dot.className = `dot ${index === 0 ? 'active' : ''}`;
-        dot.addEventListener('click', () => goToSlide(index));
-        sliderDots.appendChild(dot);
-    });
-
-    function goToSlide(n) {
-        currentSlide = (n + slides.length) % slides.length;
-        updateSlider();
-    }
-
-    function updateSlider() {
-        const heroSlides = document.querySelectorAll('.hero-slide');
-        const dots = document.querySelectorAll('.dot');
-
-        heroSlides.forEach((slide, index) => {
-            slide.classList.toggle('active', index === currentSlide);
-        });
-
-        dots.forEach((dot, index) => {
-            dot.classList.toggle('active', index === currentSlide);
-        });
-    }
-
-    sliderPrev.addEventListener('click', () => {
-        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-        updateSlider();
-    });
-
-    sliderNext.addEventListener('click', () => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateSlider();
-    });
-
-    // Auto-play slider
-    setInterval(() => {
-        currentSlide = (currentSlide + 1) % slides.length;
-        updateSlider();
-    }, 5000); // Change slide every 5 seconds
-}
-
-// Theme Toggle
-function initializeThemeToggle() {
-    const themeToggle = document.getElementById('themeToggle');
-
-    // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    document.body.classList.toggle('dark-mode', currentTheme === 'dark');
-    updateThemeIcon();
-
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const newTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon();
-    });
-
-    function updateThemeIcon() {
-        const icon = themeToggle.querySelector('i');
-        if (document.body.classList.contains('dark-mode')) {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
-    }
-}
-
-// Scroll Animations
-function initializeScrollAnimations() {
-    const reveals = document.querySelectorAll('.reveal');
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target);
+        initInteractions();
+        initLightbox(); // Setup modal click captures
+        
+        setTimeout(() => {
+            const preloader = document.getElementById("loading-spinner");
+            if(preloader) {
+                preloader.style.opacity = "0";
+                setTimeout(() => preloader.style.display = "none", 500);
             }
-        });
-    }, {
-        threshold: 0.1
-    });
-
-    reveals.forEach(element => observer.observe(element));
-
-    // Animate stat numbers
-    const statNumbers = document.querySelectorAll('.stat-number');
-    const observerStats = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && !entry.target.dataset.animated) {
-                animateCounter(entry.target);
-                entry.target.dataset.animated = 'true';
-            }
-        });
-    }, { threshold: 0.5 });
-
-    statNumbers.forEach(stat => observerStats.observe(stat));
-}
-
-function animateCounter(element) {
-    const target = parseInt(element.getAttribute('data-target')) || 0;
-    const isText = isNaN(target);
-
-    if (isText) {
-        return; // Skip animation for text-based stats
+        }, 300);
     }
 
-    let current = 0;
-    const increment = target / 30;
-    const timer = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-            element.textContent = target + '+';
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(current) + '+';
+    // Interactive Image Slider Manual Controls & Loop Autoplay Logics Engine
+    function initHeroSlider(images) {
+        const container = document.getElementById("hero-carousel");
+        const dotsContainer = document.getElementById("slider-dots-container");
+        const prevBtn = document.getElementById("slider-prev");
+        const nextBtn = document.getElementById("slider-next");
+        
+        container.innerHTML = "";
+        dotsContainer.innerHTML = "";
+        
+        let currentSlide = 0;
+        let sliderInterval;
+
+        images.forEach((imgSrc, index) => {
+            // Build Slides
+            const slide = document.createElement("div");
+            slide.className = `slide ${index === 0 ? "active" : ""}`;
+            slide.style.backgroundImage = `url('${imgSrc}')`;
+            container.appendChild(slide);
+
+            // Build Bottom Dots
+            const dot = document.createElement("button");
+            dot.className = `dot ${index === 0 ? "active" : ""}`;
+            dot.setAttribute("data-slide", index);
+            dot.setAttribute("aria-label", `Go to slide ${index + 1}`);
+            dotsContainer.appendChild(dot);
+        });
+
+        const slides = container.querySelectorAll(".slide");
+        const dots = dotsContainer.querySelectorAll(".dot");
+
+        function goToSlide(n) {
+            slides[currentSlide].classList.remove("active");
+            dots[currentSlide].classList.remove("active");
+            
+            currentSlide = (n + slides.length) % slides.length;
+            
+            slides[currentSlide].classList.add("active");
+            dots[currentSlide].classList.add("active");
         }
-    }, 30);
-}
 
-// Scroll Spy
-function initializeScrollSpy() {
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section');
+        function nextSlide() { goToSlide(currentSlide + 1); }
+        function prevSlide() { goToSlide(currentSlide - 1); }
 
-    window.addEventListener('scroll', () => {
-        let current = '';
+        function startAutoplay() {
+            stopAutoplay();
+            sliderInterval = setInterval(nextSlide, 6000);
+        }
 
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            if (pageYOffset >= sectionTop - 200) {
-                current = section.getAttribute('id');
+        function stopAutoplay() {
+            if (sliderInterval) clearInterval(sliderInterval);
+        }
+
+        // Click Controls Hook Execution Pipeline
+        nextBtn.addEventListener("click", () => { nextSlide(); startAutoplay(); });
+        prevBtn.addEventListener("click", () => { prevSlide(); startAutoplay(); });
+
+        dotsContainer.addEventListener("click", (e) => {
+            if (e.target.classList.contains("dot")) {
+                const index = parseInt(e.target.getAttribute("data-slide"), 10);
+                goToSlide(index);
+                startAutoplay();
             }
         });
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('data-scroll') === current) {
-                link.classList.add('active');
-            }
+        startAutoplay();
+    }
+
+    // Cards Grid Population Utility Loader Block
+    function buildCards(items, containerId, targetLang, displayShortDesc) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = "";
+        items.forEach((item, index) => {
+            const card = document.createElement("div");
+            card.className = `modern-card reveal delay-${index % 3}`;
+            card.innerHTML = `
+                <i class="fa-solid ${item.icon} card-icon"></i>
+                <h3>${item.title[targetLang]}</h3>
+                <p>${displayShortDesc ? item.desc[targetLang] : item.description[targetLang]}</p>
+            `;
+            container.appendChild(card);
         });
-    });
-}
+    }
 
-// Back to Top
-function initializeBackToTop() {
-    const backToTop = document.getElementById('backToTop');
-
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) {
-            backToTop.style.display = 'flex';
-        } else {
-            backToTop.style.display = 'none';
-        }
-    });
-
-    backToTop.addEventListener('click', (e) => {
-        e.preventDefault();
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
+    function buildStatsCounters(statsArray, targetLang) {
+        const container = document.getElementById("stats-container");
+        container.innerHTML = "";
+        statsArray.forEach(stat => {
+            const div = document.createElement("div");
+            div.className = "stat-item";
+            div.innerHTML = `
+                <h2 class="counter-num" data-target="${stat.number}">0</h2>
+                <p style="font-weight:600; color:var(--text-muted);">${stat.title[targetLang]}</p>
+            `;
+            container.appendChild(div);
         });
-    });
-}
+    }
 
-// ========================================
-// LAZY LOADING OPTIMIZATION
-// ========================================
+    // Media Gallery with Dynamic Click-To-Popup Tracking Hooks
+    function buildGallery(images) {
+        const container = document.getElementById("gallery-container");
+        container.innerHTML = "";
+        images.forEach((imgSrc, index) => {
+            const wrap = document.createElement("div");
+            wrap.className = `gallery-item reveal delay-${index % 4}`;
+            
+            const img = document.createElement("img");
+            img.alt = "Onion Center Farm Produce Product Thumbnail Click to Expand";
+            img.setAttribute("data-src", imgSrc);
+            img.classList.add("lightbox-trigger"); // Event capture handle identifier
+            
+            wrap.appendChild(img);
+            container.appendChild(wrap);
+        });
 
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                if (img.dataset.src) {
-                    img.src = img.dataset.src;
-                    img.removeAttribute('data-src');
+        // Lazy load strategy intersection bindings 
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.getAttribute("data-src");
+                    img.addEventListener("load", () => img.classList.add("loaded"));
+                    observer.unobserve(img);
                 }
-                imageObserver.unobserve(img);
+            });
+        });
+        container.querySelectorAll("img").forEach(img => imageObserver.observe(img));
+    }
+
+    // Lightbox Popup Event Listeners Interface Logics Processing
+    function initLightbox() {
+        const modal = document.getElementById("gallery-lightbox");
+        const modalImg = document.getElementById("lightbox-img");
+        const closeBtn = document.getElementById("lightbox-close");
+        const galleryContainer = document.getElementById("gallery-container");
+
+        // Fixed: Listen for clicks anywhere on the item container
+        galleryContainer.addEventListener("click", (e) => {
+            // Find the closest gallery item to handle clicks on the image or the overlay icon
+            const item = e.target.closest(".gallery-item");
+            if (item) {
+                const img = item.querySelector("img");
+                // Fallback to data-src if src hasn't fully registered yet
+                const imgSrc = img.src || img.getAttribute("data-src");
+                
+                if (imgSrc) {
+                    modal.setAttribute("aria-hidden", "false");
+                    modalImg.src = imgSrc;
+                    document.body.style.overflow = "hidden"; // Freeze background scroll
+                }
             }
         });
-    });
 
-    document.querySelectorAll('img[data-src]').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
+        function closeLightbox() {
+            modal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = ""; // Reactivate core window scroll tracks
+        }
 
-// ========================================
-// RESPONSIVE STICKY HEADER
-// ========================================
+        closeBtn.addEventListener("click", closeLightbox);
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeLightbox();
+        });
+        
+        // Native Accessibility Escape key close capture
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && modal.getAttribute("aria-hidden") === "false") {
+                closeLightbox();
+            }
+        });
+    }
 
-let scrollPos = 0;
-const header = document.getElementById('header');
+    function buildWhyChooseUs(items, targetLang) {
+        const container = document.getElementById("why-container");
+        container.innerHTML = "";
+        items.forEach((item, idx) => {
+            const div = document.createElement("div");
+            div.className = `why-item reveal delay-${idx % 2}`;
+            div.innerHTML = `
+                <i class="fa-solid ${item.icon}"></i>
+                <div>
+                    <h3>${item.title[targetLang]}</h3>
+                    <p>${item.desc[targetLang]}</p>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 
-window.addEventListener('scroll', () => {
-    scrollPos = window.scrollY;
+    function buildContactCards(contact, targetLang) {
+        const container = document.getElementById("contact-methods-container");
+        const footerSocials = document.getElementById("footer-socials-container");
+        container.innerHTML = "";
+        footerSocials.innerHTML = "";
 
-    // Add shadow on scroll
-    if (scrollPos > 10) {
-        header.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.1)';
-    } else {
-        header.style.boxShadow = 'none';
+        const networks = [
+            { key: "phone", icon: "fa-phone", label: "Phone", url: `tel:${contact.phone}`, showCard: !!contact.phone },
+            { key: "email", icon: "fa-envelope", label: "Email", url: `mailto:${contact.email}`, showCard: !!contact.email },
+            { key: "facebook", icon: "fa-facebook-f", label: "Facebook", url: contact.facebook, showCard: !!contact.facebook },
+            { key: "tiktok", icon: "fa-tiktok", label: "TikTok", url: contact.tiktok, showCard: !!contact.tiktok },
+            { key: "wechat", icon: "fa-weixin", label: "WeChat", url: `weixin://dl/chat?${contact.wechat}`, showCard: !!contact.wechat },
+            { key: "viber", icon: "fa-viber", label: "Viber", url: contact.viber, showCard: !!contact.viber },
+            { key: "whatsapp", icon: "fa-whatsapp", label: "WhatsApp", url: contact.whatsapp, showCard: !!contact.whatsapp },
+            { key: "telegram", icon: "fa-telegram", label: "Telegram", url: contact.telegram, showCard: !!contact.telegram }
+        ];
+
+        networks.forEach(net => {
+            if (net.showCard) {
+                const card = document.createElement("a");
+                card.href = net.url;
+                card.target = "_blank";
+                card.rel = "noopener noreferrer";
+                card.className = "contact-link-card reveal";
+                card.innerHTML = `
+                    <i class="fa-brands ${net.icon === 'fa-phone' || net.icon === 'fa-envelope' ? 'fa-solid' : 'fa-brands'} ${net.icon} icon-${net.key}"></i>
+                    <div>
+                        <strong style="display:block; font-size:1.1rem;">${net.label}</strong>
+                        <span style="color:var(--text-muted); font-size:0.9rem;">${contact[net.key]}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                if(net.key !== 'phone' && net.key !== 'email') {
+                    const footerLink = document.createElement("a");
+                    footerLink.href = net.url;
+                    footerLink.target = "_blank";
+                    footerLink.rel = "noopener noreferrer";
+                    footerLink.innerHTML = `<i class="fa-brands ${net.icon}"></i>`;
+                    footerSocials.appendChild(footerLink);
+                }
+            }
+        });
+    }
+
+    function initInteractions() {
+        const hamburger = document.getElementById("hamburger-menu");
+        const nav = document.getElementById("main-nav");
+        
+        if (hamburger && nav) {
+            hamburger.replaceWith(hamburger.cloneNode(true));
+            const newHamburger = document.getElementById("hamburger-menu");
+            
+            newHamburger.addEventListener("click", () => {
+                newHamburger.classList.toggle("active");
+                nav.classList.toggle("active");
+            });
+
+            document.querySelectorAll(".nav-links a").forEach(link => {
+                link.addEventListener("click", () => {
+                    newHamburger.classList.remove("active");
+                    nav.classList.remove("active");
+                });
+            });
+        }
+
+        if(langSelect) {
+            langSelect.removeEventListener("change", handleLangChange);
+            langSelect.addEventListener("change", handleLangChange);
+        }
+
+        const revealElements = document.querySelectorAll(".reveal");
+        const backToTop = document.getElementById("back-to-top");
+        const counterElements = document.querySelectorAll(".counter-num");
+        let countersStarted = false;
+
+        function runOnScroll() {
+            if (window.scrollY > 300) {
+                backToTop.classList.add("visible");
+            } else {
+                backToTop.classList.remove("visible");
+            }
+
+            revealElements.forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight - 50) {
+                    el.classList.add("active");
+                }
+            });
+
+            if (counterElements.length > 0 && !countersStarted) {
+                const triggerTop = counterElements[0].getBoundingClientRect().top;
+                if (triggerTop < window.innerHeight - 30) {
+                    countersStarted = true;
+                    counterElements.forEach(counter => {
+                        const target = parseInt(counter.getAttribute("data-target"), 10);
+                        let current = 0;
+                        const duration = 2000;
+                        const stepTime = Math.max(Math.floor(duration / target), 15);
+                        
+                        const timer = setInterval(() => {
+                            current += Math.ceil(target / (duration / stepTime));
+                            if (current >= target) {
+                                counter.textContent = target;
+                                clearInterval(timer);
+                            } else {
+                                counter.textContent = current;
+                            }
+                        }, stepTime);
+                    });
+                }
+            }
+        }
+
+        window.removeEventListener("scroll", runOnScroll);
+        window.addEventListener("scroll", runOnScroll);
+        runOnScroll();
+
+        backToTop.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+    function handleLangChange(e) {
+        config.currentLanguage = e.target.value;
+        localStorage.setItem("onion_lang", e.target.value);
+        renderApp();
+    }
+
+    function initTheme() {
+        const themeToggle = document.getElementById("theme-toggle");
+        const savedTheme = localStorage.getItem("onion_theme") || "light";
+        
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("onion_theme", newTheme);
+            updateThemeIcon(newTheme);
+        });
+    }
+
+    function updateThemeIcon(theme) {
+        const icon = document.querySelector("#theme-toggle i");
+        if(icon) {
+            icon.className = theme === "dark" ? "fa-solid fa-sun" : "fa-solid fa-moon";
+        }
     }
 });
-
-// ========================================
-// ERROR HANDLING
-// ========================================
-
-// Check if BUSINESS_CONFIG is loaded
-if (typeof BUSINESS_CONFIG === 'undefined') {
-    console.error('Error: config.js not loaded. Please ensure config.js is included in the HTML.');
-    document.body.innerHTML = '<div style="padding: 50px; text-align: center;"><h1>Configuration Error</h1><p>Please ensure config.js is properly linked in index.html</p></div>';
-}
