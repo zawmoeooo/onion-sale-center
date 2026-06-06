@@ -2,7 +2,51 @@
  * ONION SALE CENTER - MAIN JAVASCRIPT
  * ==================================
  * Handles all dynamic content loading and interactivity
+ * Supports English and Myanmar languages with gallery modal
  */
+
+// ========================================
+// LANGUAGE MANAGEMENT
+// ========================================
+
+let currentLanguage = localStorage.getItem('language') || 'en';
+
+function getTranslation(path) {
+    const keys = path.split('.');
+    let value = BUSINESS_CONFIG.languages[currentLanguage];
+    
+    for (let key of keys) {
+        if (value && typeof value === 'object' && key in value) {
+            value = value[key];
+        } else {
+            return path; // Return path if translation not found
+        }
+    }
+    return value;
+}
+
+function changeLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    updateAllContent();
+    updateLanguageButtons();
+}
+
+function updateLanguageButtons() {
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.getAttribute('data-lang') === currentLanguage) {
+            btn.classList.add('active');
+        }
+    });
+}
+
+function updateTextContent() {
+    document.querySelectorAll('[data-text]').forEach(element => {
+        const key = element.getAttribute('data-text');
+        element.textContent = getTranslation(key);
+    });
+}
 
 // ========================================
 // INITIALIZATION
@@ -17,6 +61,9 @@ function initializeWebsite() {
     setTimeout(() => {
         document.getElementById('loadingSpinner').classList.add('hidden');
     }, 500);
+
+    // Initialize language
+    updateLanguageButtons();
 
     // Load all content from config
     loadBusinessInfo();
@@ -36,9 +83,27 @@ function initializeWebsite() {
     initializeScrollAnimations();
     initializeScrollSpy();
     initializeBackToTop();
+    initializeLanguageSwitcher();
+    initializeGalleryModal();
 
     // Set current year
     document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+    // Update text content for current language
+    updateTextContent();
+}
+
+function updateAllContent() {
+    loadBusinessInfo();
+    loadAboutSection();
+    loadGoalsSection();
+    loadServicesSection();
+    loadGallerySection();
+    loadBenefitsSection();
+    loadContactSection();
+    loadMapSection();
+    loadFooter();
+    updateTextContent();
 }
 
 // ========================================
@@ -47,16 +112,17 @@ function initializeWebsite() {
 
 function loadBusinessInfo() {
     const config = BUSINESS_CONFIG;
+    const lang = getTranslation('businessName');
+    const tagline = getTranslation('tagline');
     
     document.getElementById('logo').src = config.logo;
-    document.getElementById('businessName').textContent = config.businessName;
-    document.getElementById('heroTitle').textContent = config.businessName;
-    document.getElementById('heroTagline').textContent = config.tagline;
+    document.getElementById('businessName').textContent = lang;
+    document.getElementById('heroTitle').textContent = lang;
+    document.getElementById('heroTagline').textContent = tagline;
 }
 
 function loadAboutSection() {
-    const config = BUSINESS_CONFIG;
-    const about = config.about;
+    const about = getTranslation('about');
 
     document.getElementById('aboutTitle').textContent = about.title;
     document.getElementById('aboutDescription').textContent = about.description;
@@ -65,11 +131,11 @@ function loadAboutSection() {
 }
 
 function loadGoalsSection() {
-    const config = BUSINESS_CONFIG;
+    const goals = getTranslation('goals');
     const goalsGrid = document.getElementById('goalsGrid');
     
     goalsGrid.innerHTML = '';
-    config.goals.forEach((goal, index) => {
+    goals.forEach((goal) => {
         const goalCard = document.createElement('div');
         goalCard.className = 'goal-card reveal';
         goalCard.innerHTML = `
@@ -84,11 +150,11 @@ function loadGoalsSection() {
 }
 
 function loadServicesSection() {
-    const config = BUSINESS_CONFIG;
+    const services = getTranslation('services');
     const servicesGrid = document.getElementById('servicesGrid');
     
     servicesGrid.innerHTML = '';
-    config.services.forEach((service) => {
+    services.forEach((service) => {
         const serviceCard = document.createElement('div');
         serviceCard.className = 'service-card reveal';
         serviceCard.innerHTML = `
@@ -115,9 +181,9 @@ function loadGallerySection() {
             </div>
         `;
         
-        // Add click to open image in new tab
+        // Add click to open image in modal
         galleryItem.addEventListener('click', () => {
-            window.open(image, '_blank');
+            openGalleryModal(index);
         });
         
         galleryGrid.appendChild(galleryItem);
@@ -125,11 +191,11 @@ function loadGallerySection() {
 }
 
 function loadBenefitsSection() {
-    const config = BUSINESS_CONFIG;
+    const benefits = getTranslation('benefits');
     const benefitsGrid = document.getElementById('benefitsGrid');
     
     benefitsGrid.innerHTML = '';
-    config.benefits.forEach((benefit) => {
+    benefits.forEach((benefit) => {
         const benefitCard = document.createElement('div');
         benefitCard.className = 'benefit-card reveal';
         benefitCard.innerHTML = `
@@ -147,6 +213,7 @@ function loadContactSection() {
     const config = BUSINESS_CONFIG;
     const contactGrid = document.getElementById('contactGrid');
     const contact = config.contact;
+    const labels = getTranslation('contact_labels');
     
     contactGrid.innerHTML = '';
 
@@ -155,7 +222,7 @@ function loadContactSection() {
     phoneCard.className = 'contact-card reveal';
     phoneCard.innerHTML = `
         <i class="fas fa-phone contact-icon"></i>
-        <p class="contact-label">Phone</p>
+        <p class="contact-label">${labels.phone}</p>
         <p class="contact-value"><a href="tel:${contact.phone}">${contact.phone}</a></p>
     `;
     contactGrid.appendChild(phoneCard);
@@ -165,7 +232,7 @@ function loadContactSection() {
     emailCard.className = 'contact-card reveal';
     emailCard.innerHTML = `
         <i class="fas fa-envelope contact-icon"></i>
-        <p class="contact-label">Email</p>
+        <p class="contact-label">${labels.email}</p>
         <p class="contact-value"><a href="mailto:${contact.email}">${contact.email}</a></p>
     `;
     contactGrid.appendChild(emailCard);
@@ -175,7 +242,7 @@ function loadContactSection() {
     facebookCard.className = 'contact-card reveal';
     facebookCard.innerHTML = `
         <i class="fab fa-facebook contact-icon"></i>
-        <p class="contact-label">Facebook</p>
+        <p class="contact-label">${labels.facebook}</p>
         <p class="contact-value"><a href="${contact.facebook}" target="_blank" rel="noopener noreferrer">Visit Page</a></p>
     `;
     contactGrid.appendChild(facebookCard);
@@ -185,7 +252,7 @@ function loadContactSection() {
     tiktokCard.className = 'contact-card reveal';
     tiktokCard.innerHTML = `
         <i class="fab fa-tiktok contact-icon"></i>
-        <p class="contact-label">TikTok</p>
+        <p class="contact-label">${labels.tiktok}</p>
         <p class="contact-value"><a href="${contact.tiktok}" target="_blank" rel="noopener noreferrer">Visit</a></p>
     `;
     contactGrid.appendChild(tiktokCard);
@@ -195,7 +262,7 @@ function loadContactSection() {
     wechatCard.className = 'contact-card reveal';
     wechatCard.innerHTML = `
         <i class="fab fa-weixin contact-icon"></i>
-        <p class="contact-label">WeChat</p>
+        <p class="contact-label">${labels.wechat}</p>
         <p class="contact-value">${contact.wechat}</p>
     `;
     contactGrid.appendChild(wechatCard);
@@ -205,7 +272,7 @@ function loadContactSection() {
     viberCard.className = 'contact-card reveal';
     viberCard.innerHTML = `
         <i class="fas fa-phone contact-icon"></i>
-        <p class="contact-label">Viber</p>
+        <p class="contact-label">${labels.viber}</p>
         <p class="contact-value"><a href="viber://contact?number=${contact.viber.replace(/\D/g, '')}">${contact.viber}</a></p>
     `;
     contactGrid.appendChild(viberCard);
@@ -215,7 +282,7 @@ function loadContactSection() {
     whatsappCard.className = 'contact-card reveal';
     whatsappCard.innerHTML = `
         <i class="fab fa-whatsapp contact-icon"></i>
-        <p class="contact-label">WhatsApp</p>
+        <p class="contact-label">${labels.whatsapp}</p>
         <p class="contact-value"><a href="https://wa.me/${contact.whatsapp.replace(/\D/g, '')}" target="_blank" rel="noopener noreferrer">${contact.whatsapp}</a></p>
     `;
     contactGrid.appendChild(whatsappCard);
@@ -225,7 +292,7 @@ function loadContactSection() {
     telegramCard.className = 'contact-card reveal';
     telegramCard.innerHTML = `
         <i class="fab fa-telegram contact-icon"></i>
-        <p class="contact-label">Telegram</p>
+        <p class="contact-label">${labels.telegram}</p>
         <p class="contact-value"><a href="${contact.telegram}" target="_blank" rel="noopener noreferrer">Visit</a></p>
     `;
     contactGrid.appendChild(telegramCard);
@@ -233,9 +300,10 @@ function loadContactSection() {
 
 function loadMapSection() {
     const config = BUSINESS_CONFIG;
+    const addressKey = currentLanguage === 'my' ? 'text_my' : 'text_en';
     const address = config.address;
 
-    document.getElementById('addressText').textContent = address.text;
+    document.getElementById('addressText').textContent = address[addressKey];
     
     const mapContainer = document.getElementById('mapContainer');
     mapContainer.innerHTML = `<iframe src="${address.googleMapEmbed}" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
@@ -243,7 +311,8 @@ function loadMapSection() {
 
 function loadFooter() {
     const config = BUSINESS_CONFIG;
-    document.getElementById('footerBusinessName').textContent = config.businessName;
+    const businessName = getTranslation('businessName');
+    document.getElementById('footerBusinessName').textContent = businessName;
 
     // Load social links
     const footerSocialLinks = document.getElementById('footerSocialLinks');
@@ -275,6 +344,17 @@ function loadFooter() {
 // INTERACTIVE FEATURES
 // ========================================
 
+// Language Switcher
+function initializeLanguageSwitcher() {
+    const langButtons = document.querySelectorAll('.lang-btn');
+    langButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.getAttribute('data-lang');
+            changeLanguage(lang);
+        });
+    });
+}
+
 // Header Menu
 function initializeHeaderMenu() {
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
@@ -292,6 +372,66 @@ function initializeHeaderMenu() {
             navMenu.classList.remove('active');
         });
     });
+}
+
+// Gallery Modal
+let currentGalleryIndex = 0;
+
+function initializeGalleryModal() {
+    const modal = document.getElementById('galleryModal');
+    const closeBtn = document.querySelector('.gallery-modal-close');
+    const prevBtn = document.getElementById('galleryModalPrev');
+    const nextBtn = document.getElementById('galleryModalNext');
+
+    closeBtn.addEventListener('click', closeGalleryModal);
+    prevBtn.addEventListener('click', () => changeGalleryImage(-1));
+    nextBtn.addEventListener('click', () => changeGalleryImage(1));
+
+    // Close modal when clicking outside the image
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeGalleryModal();
+        }
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display !== 'none') {
+            if (e.key === 'ArrowLeft') changeGalleryImage(-1);
+            if (e.key === 'ArrowRight') changeGalleryImage(1);
+            if (e.key === 'Escape') closeGalleryModal();
+        }
+    });
+}
+
+function openGalleryModal(index) {
+    const config = BUSINESS_CONFIG;
+    const modal = document.getElementById('galleryModal');
+    const img = document.getElementById('galleryModalImg');
+    
+    currentGalleryIndex = index;
+    img.src = config.galleryImages[index];
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeGalleryModal() {
+    const modal = document.getElementById('galleryModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function changeGalleryImage(direction) {
+    const config = BUSINESS_CONFIG;
+    currentGalleryIndex += direction;
+    
+    if (currentGalleryIndex >= config.galleryImages.length) {
+        currentGalleryIndex = 0;
+    } else if (currentGalleryIndex < 0) {
+        currentGalleryIndex = config.galleryImages.length - 1;
+    }
+    
+    document.getElementById('galleryModalImg').src = config.galleryImages[currentGalleryIndex];
 }
 
 // Hero Slider
@@ -357,7 +497,6 @@ function initializeHeroSlider() {
 // Theme Toggle
 function initializeThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
-    const htmlElement = document.documentElement;
 
     // Check for saved theme preference or default to light mode
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -417,7 +556,6 @@ function initializeScrollAnimations() {
 function animateCounter(element) {
     const target = parseInt(element.getAttribute('data-target')) || 0;
     const isText = isNaN(target);
-    const text = element.textContent;
 
     if (isText) {
         return; // Skip animation for text-based stats
