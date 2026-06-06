@@ -61,10 +61,19 @@
                     </ul>
                 </nav>
                 
-                <!-- Language Selector -->
-                <div class="language-selector">
-                    <button class="lang-btn active" data-lang="en">EN</button>
-                    <button class="lang-btn" data-lang="my"> Myanmar</button>
+                <!-- Language Selector Dropdown -->
+                <div class="language-selector" id="languageSelector">
+                    <button class="lang-btn active" id="langToggleBtn" data-lang="en">
+                        <i class="fas fa-globe"></i> EN
+                    </button>
+                    <div class="lang-dropdown-menu" id="langDropdown">
+                        <button class="lang-option active" data-lang="en">
+                            <i class="fas fa-check"></i> English
+                        </button>
+                        <button class="lang-option" data-lang="my">
+                            <i class="fas fa-check"></i> Myanmar
+                        </button>
+                    </div>
                 </div>
                 
                 <!-- Mobile Menu Button -->
