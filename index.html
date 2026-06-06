@@ -3,270 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Onion Sale Center - Fresh Quality Onions at Competitive Prices. Wholesale and retail onion supplier.">
-    <meta name="keywords" content="onion, wholesale, retail, fresh produce, agriculture, delivery service">
-    <meta name="author" content="Onion Sale Center">
+    <title>Onion Sale Center</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link id="favicon-link" rel="icon" type="image/png" href="">
     
-    <!-- Open Graph Tags for Social Sharing -->
+    <meta property="og:type" content="website">
     <meta property="og:title" content="Onion Sale Center">
-    <meta property="og:description" content="Fresh Quality Onions at Competitive Prices">
-    <meta property="og:image" content="images/og-image.jpg">
-    <meta property="og:url" content="https://your-domain.com">
-    <meta property="og:type" content="business.business">
+    <meta property="og:description" content="Premium Wholesale & Retail Onion Supply">
+    <meta property="og:image" content="">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Onion Sale Center">
-    <meta name="twitter:description" content="Fresh Quality Onions at Competitive Prices">
-    <meta name="twitter:image" content="images/og-image.jpg">
-    
-    <title>Onion Sale Center - Fresh Quality Onions</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Loading Spinner -->
-    <div class="loading-spinner" id="loadingSpinner">
+
+    <div id="loading-spinner" class="spinner-overlay">
         <div class="spinner"></div>
     </div>
 
-    <!-- Navigation Header -->
-    <header class="header" id="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo-section">
-                    <img src="images/logo.png" alt="Logo" class="logo" id="logo">
-                    <span class="business-name" id="businessName"></span>
-                </div>
-                
-                <nav class="nav-menu" id="navMenu">
-                    <ul class="nav-list">
-                        <li><a href="#home" class="nav-link" data-scroll="home" data-text="nav.home"></a></li>
-                        <li><a href="#about" class="nav-link" data-scroll="about" data-text="nav.about"></a></li>
-                        <li><a href="#goals" class="nav-link" data-scroll="goals" data-text="nav.goals"></a></li>
-                        <li><a href="#services" class="nav-link" data-scroll="services" data-text="nav.services"></a></li>
-                        <li><a href="#gallery" class="nav-link" data-scroll="gallery" data-text="nav.gallery"></a></li>
-                        <li><a href="#why-us" class="nav-link" data-scroll="why-us" data-text="nav.why_us"></a></li>
-                        <li><a href="#contact" class="nav-link" data-scroll="contact" data-text="nav.contact"></a></li>
-                    </ul>
-                </nav>
-                
-                <!-- Language Selector Dropdown -->
-                <div class="language-selector" id="languageSelector">
-                    <button class="lang-btn active" id="langToggleBtn" data-lang="en">
-                        <i class="fas fa-globe"></i> EN
-                    </button>
-                    <div class="lang-dropdown-menu" id="langDropdown">
-                        <button class="lang-option active" data-lang="en">
-                            <i class="fas fa-check"></i> English
-                        </button>
-                        <button class="lang-option" data-lang="my">
-                            <i class="fas fa-check"></i> Myanmar
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Mobile Menu Button -->
-                <button class="mobile-menu-btn" id="mobileMenuBtn">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+    <header class="main-header">
+        <div class="header-container">
+            <a href="#home" class="logo-area">
+                <img id="header-logo" src="" alt="Business Logo" class="logo-img">
+                <span id="header-title" class="brand-name"></span>
+            </a>
+            
+            <nav class="navbar" id="main-nav">
+                <ul class="nav-links" id="nav-links-container"></ul>
+            </nav>
+
+            <div class="header-actions">
+                <select id="lang-select" class="lang-dropdown">
+                    <option value="en">English</option>
+                    <option value="my">မြန်မာ</option>
+                </select>
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon"></i>
                 </button>
-                
-                <!-- Theme Toggle -->
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
+                <button class="hamburger" id="hamburger-menu" aria-label="Toggle Menu">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-slider" id="heroSlider">
-            <!-- Slides will be generated dynamically -->
-        </div>
-        
-        <button class="slider-btn slider-btn-prev" id="sliderPrev">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="slider-btn slider-btn-next" id="sliderNext">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        
-        <div class="hero-content">
-            <h1 class="hero-title" id="heroTitle"></h1>
-            <p class="hero-tagline" id="heroTagline"></p>
-            <a href="#contact" class="btn btn-primary" id="heroCtaBtn">
-                <i class="fas fa-envelope"></i> <span data-text="nav.contact"></span>
-            </a>
-        </div>
-        
-        <div class="slider-dots" id="sliderDots"></div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-text="about.title"></h2>
-                <div class="title-underline"></div>
-            </div>
+    <main>
+        <section id="home" class="hero-section">
+            <div class="carousel-container" id="hero-carousel"></div>
             
-            <div class="about-content">
-                <div class="about-text">
-                    <h3 id="aboutTitle"></h3>
-                    <p id="aboutDescription"></p>
-                    <p id="aboutHistory"></p>
-                    <p id="missionStatement"></p>
-                </div>
-                
-                <div class="about-stats">
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="500">500+</div>
-                        <div class="stat-label" data-text="stats.customers"></div>
+            <button class="slider-arrow prev-arrow" id="slider-prev" aria-label="Previous Slide">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="slider-arrow next-arrow" id="slider-next" aria-label="Next Slide">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            <div class="slider-dots" id="slider-dots-container"></div>
+
+            <div class="hero-overlay">
+                <h1 id="hero-headline" class="reveal"></h1>
+                <p id="hero-tagline" class="reveal delay-1"></p>
+                <a href="#contact" id="hero-cta" class="btn btn-primary reveal delay-2"></a>
+            </div>
+        </section>
+
+        <section id="about" class="about-section section-padding">
+            <div class="container">
+                <h2 id="about-title" class="section-title reveal"></h2>
+                <div class="about-grid">
+                    <div class="about-card reveal"><p id="about-desc"></p></div>
+                    <div class="about-card reveal delay-1">
+                        <h3 id="history-title"></h3>
+                        <p id="about-history"></p>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="10">10+</div>
-                        <div class="stat-label" data-text="stats.experience"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="1000">1000+</div>
-                        <div class="stat-label" data-text="stats.supplied"></div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" data-target="24">24/7</div>
-                        <div class="stat-label" data-text="stats.support"></div>
+                    <div class="about-card reveal delay-2">
+                        <h3 id="mission-title"></h3>
+                        <p id="about-mission"></p>
                     </div>
                 </div>
+                <div class="stats-grid" id="stats-container"></div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Goals Section -->
-    <section class="goals" id="goals">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-text="goals_title"></h2>
-                <div class="title-underline"></div>
+        <section id="goals" class="goals-section section-padding bg-alt">
+            <div class="container">
+                <h2 id="goals-main-title" class="section-title reveal"></h2>
+                <div class="cards-grid" id="goals-container"></div>
             </div>
-            
-            <div class="goals-grid" id="goalsGrid">
-                <!-- Goals cards will be generated dynamically -->
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Services Section -->
-    <section class="services" id="services">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-text="services_title"></h2>
-                <div class="title-underline"></div>
+        <section id="products" class="products-section section-padding">
+            <div class="container">
+                <h2 id="services-main-title" class="section-title reveal"></h2>
+                <div class="cards-grid" id="services-container"></div>
             </div>
-            
-            <div class="services-grid" id="servicesGrid">
-                <!-- Service cards will be generated dynamically -->
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Gallery Section -->
-    <section class="gallery" id="gallery">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-text="gallery_title"></h2>
-                <div class="title-underline"></div>
+        <section id="gallery" class="gallery-section section-padding bg-alt">
+            <div class="container">
+                <h2 id="gallery-main-title" class="section-title reveal"></h2>
+                <div class="gallery-grid" id="gallery-container"></div>
             </div>
-            
-            <div class="gallery-grid" id="galleryGrid">
-                <!-- Gallery images will be generated dynamically -->
-            </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Gallery Modal -->
-    <div class="gallery-modal" id="galleryModal">
-        <span class="gallery-modal-close">&times;</span>
-        <img class="gallery-modal-content" id="galleryModalImg">
-        <button class="gallery-modal-prev" id="galleryModalPrev"><i class="fas fa-chevron-left"></i></button>
-        <button class="gallery-modal-next" id="galleryModalNext"><i class="fas fa-chevron-right"></i></button>
+        <section id="whyUs" class="why-section section-padding">
+            <div class="container">
+                <h2 id="why-main-title" class="section-title reveal"></h2>
+                <div class="why-grid" id="why-container"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact-section section-padding bg-alt">
+            <div class="container">
+                <h2 id="contact-main-title" class="section-title reveal"></h2>
+                <div class="contact-wrapper">
+                    <div class="contact-cards" id="contact-methods-container"></div>
+                    <div class="contact-map reveal">
+                        <h3 id="map-location-title" style="margin-bottom:1rem;"></h3>
+                        <p id="address-text" style="margin-bottom:1.5rem; color:var(--text-muted);"></p>
+                        <div class="map-responsive">
+                            <iframe id="google-map-iframe" src="" width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="gallery-lightbox" class="lightbox-modal" aria-hidden="true">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <img class="lightbox-content" id="lightbox-img" alt="Enlarged gallery view">
     </div>
 
-    <!-- Why Choose Us Section -->
-    <section class="why-us" id="why-us">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-text="why_us_title"></h2>
-                <div class="title-underline"></div>
-            </div>
-            
-            <div class="benefits-grid" id="benefitsGrid">
-                <!-- Benefits will be generated dynamically -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title" data-text="contact_title"></h2>
-                <div class="title-underline"></div>
-            </div>
-            
-            <div class="contact-grid" id="contactGrid">
-                <!-- Contact cards will be generated dynamically -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Address & Map Section -->
-    <section class="map-section" id="map-section">
-        <div class="container">
-            <div class="map-content">
-                <div class="map-info">
-                    <h3 data-text="map_title"></h3>
-                    <p id="addressText"></p>
-                </div>
-                
-                <div class="map-container" id="mapContainer">
-                    <!-- Google Map will be embedded dynamically -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-text">
-                    <p>&copy; <span id="footerYear"></span> <span id="footerBusinessName"></span>. <span data-text="footer_rights"></span></p>
-                </div>
-                
-                <div class="social-links" id="footerSocialLinks">
-                    <!-- Social links will be generated dynamically -->
-                </div>
-                
-                <a href="#header" class="back-to-top" id="backToTop">
-                    <i class="fas fa-arrow-up"></i>
-                </a>
-            </div>
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <p>© <span id="footer-year"></span> <span id="footer-biz-name"></span>. All rights reserved.</p>
+            <div class="footer-socials" id="footer-socials-container"></div>
         </div>
     </footer>
 
-    <!-- Config and Scripts -->
+    <button id="back-to-top" class="back-top-btn" aria-label="Back to Top">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
     <script src="config.js"></script>
     <script src="script.js"></script>
 </body>
